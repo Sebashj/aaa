@@ -54,6 +54,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.awt.Toolkit;
@@ -148,18 +149,21 @@ public class vDetalleV extends JInternalFrame {
 	
 	public void pdf() {
 		try {
-			FileOutputStream archivo;
-			URI uri = new URI(getClass().getResource("/PDF/detalleV.pdf").toString());
-			File file = new File(uri);
-			archivo = new FileOutputStream(file);
-			Document doc = new Document();
-			PdfWriter.getInstance(doc, archivo);
-			doc.open();
-			java.awt.Image Img2 = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Img/logodesot.jpg"));
-			Image Img = Image.getInstance(getClass().getResource("/Img/logodesot.jpg"));
-			Img.setAlignment(Element.ALIGN_CENTER);
-            Img.scaleToFit(200, 200);
-			doc.add(Img);
+
+			try {
+				FileOutputStream archivo;				
+	            File temp = new File(System.getProperty("java.io.tmpdir") + "detalleV.pdf");
+	            InputStream flujoEntrada = (InputStream) this.getClass().getResourceAsStream("/PDF/detalleV.pdf");
+	            FileOutputStream flujoSalida = new FileOutputStream(temp);         
+				archivo = new FileOutputStream(temp);
+				Document doc = new Document();
+				PdfWriter.getInstance(doc, archivo);
+				doc.open();
+				java.awt.Image img2 = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Img/logodesot.png"));
+				Image img = Image.getInstance(getClass().getResource("/Img/logodesot.png"));
+				img.setAlignment(Element.ALIGN_CENTER);
+				img.scaleToFit(200, 200);
+				doc.add(img);
 			Paragraph p = new Paragraph(10);
 			com.itextpdf.text.Font negrita = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
 			p.add(Chunk.NEWLINE);
@@ -215,19 +219,19 @@ public class vDetalleV extends JInternalFrame {
 			doc.add(p1);
 			doc.close();
 			archivo.close();
-			Desktop.getDesktop().open(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR AL CREAR ARCHIVO");
-		} catch (DocumentException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR AL CREAR DOCUMENTO PDF");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR AL CREAR IO");
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Desktop.getDesktop().open(temp);
+			} catch (FileNotFoundException ex) {
+				JOptionPane.showMessageDialog(null, ex.getStackTrace());
+			} catch (DocumentException ex) {
+				JOptionPane.showMessageDialog(null, ex.getStackTrace());
+			} catch (IOException ex) {
+				JOptionPane.showMessageDialog(null, ex.getStackTrace());
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
+			JOptionPane.showMessageDialog(null, e.getStackTrace());
+
 		}
 	}
 

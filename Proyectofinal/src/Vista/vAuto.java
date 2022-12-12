@@ -71,6 +71,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -131,87 +132,85 @@ public class vAuto extends JInternalFrame {
 
 	public void pdf() {
 		try {
-			FileOutputStream archivo;
-			URI uri = new URI(getClass().getResource("/PDF/Autos.pdf").toString());
-			File file = new File(uri);
-			archivo = new FileOutputStream(file);
-			Document doc = new Document();
-			PdfWriter.getInstance(doc, archivo);
-			doc.open();
-			java.awt.Image img2 = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Img/logodesot.jpg"));
-			Image img = Image.getInstance(getClass().getResource("/Img/logodesot.jpg"));
-			img.setAlignment(Element.ALIGN_CENTER);
-			img.scaleToFit(200, 200);
-			doc.add(img);
-			Paragraph p = new Paragraph(10);
-			com.itextpdf.text.Font negrita = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN,
-					12, Font.BOLD, BaseColor.BLACK);
-			p.add(Chunk.NEWLINE);
-			p.add("Auto");
-			p.add(Chunk.NEWLINE);
-			p.add(Chunk.NEWLINE);
-			p.setAlignment(Element.ALIGN_CENTER);
-			doc.add(p);
-			PdfPTable tabla = new PdfPTable(6);
-			tabla.setWidthPercentage(100);
-			PdfPCell c1 = new PdfPCell(new Phrase(" IdAuto", negrita));
-			PdfPCell c2 = new PdfPCell(new Phrase(" Marca", negrita));
-			PdfPCell c3 = new PdfPCell(new Phrase(" Año", negrita));
-			PdfPCell c4 = new PdfPCell(new Phrase(" Tipodeauto", negrita));
-			PdfPCell c5 = new PdfPCell(new Phrase(" Cilindros", negrita));
-			PdfPCell c6 = new PdfPCell(new Phrase(" Imagen", negrita));
-			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c2.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c4.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c5.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c6.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c1.setBackgroundColor(BaseColor.LIGHT_GRAY);
-			c2.setBackgroundColor(BaseColor.LIGHT_GRAY);
-			c3.setBackgroundColor(BaseColor.LIGHT_GRAY);
-			c4.setBackgroundColor(BaseColor.LIGHT_GRAY);
-			c5.setBackgroundColor(BaseColor.LIGHT_GRAY);
-			c6.setBackgroundColor(BaseColor.LIGHT_GRAY);
-			tabla.addCell(c1);
-			tabla.addCell(c2);
-			tabla.addCell(c3);
-			tabla.addCell(c4);
-			tabla.addCell(c5);
-			tabla.addCell(c6);
 
-			for (Autos u : lista) {
-				tabla.addCell("" + u.getIdauto());
-				tabla.addCell("" + u.getMarca());
-				tabla.addCell("" + u.getAño());
-				tabla.addCell("" + u.getTipodeauto());
-				tabla.addCell("" + u.getCilindros());
-				tabla.addCell("" + u.getImagen());
+			try {
+				FileOutputStream archivo;				
+	            File temp = new File(System.getProperty("java.io.tmpdir") + "Autos.pdf");
+	            InputStream flujoEntrada = (InputStream) this.getClass().getResourceAsStream("/PDF/Autos.pdf");
+	            FileOutputStream flujoSalida = new FileOutputStream(temp);         
+				archivo = new FileOutputStream(temp);
+				Document doc = new Document();
+				PdfWriter.getInstance(doc, archivo);
+				doc.open();
+				java.awt.Image img2 = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Img/logodesot.png"));
+				Image img = Image.getInstance(getClass().getResource("/Img/logodesot.png"));
+				img.setAlignment(Element.ALIGN_CENTER);
+				img.scaleToFit(200, 200);
+				doc.add(img);
+				Paragraph p = new Paragraph(10);
+				Font negrita = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+				p.add(Chunk.NEWLINE);
+				p.add("CATALOGO DE PROVEEDORES");
+				p.add(Chunk.NEWLINE);
+				p.add(Chunk.NEWLINE);
+				p.setAlignment(Element.ALIGN_CENTER);
+				doc.add(p);
+				// Tabla de datos
+				PdfPTable tabla = new PdfPTable(5);
+				tabla.setWidthPercentage(100);
+				PdfPCell c1 = new PdfPCell(new Phrase("Idauto", negrita));
+				PdfPCell c2 = new PdfPCell(new Phrase("Marca", negrita));
+				PdfPCell c3 = new PdfPCell(new Phrase("Año", negrita));
+				PdfPCell c4 = new PdfPCell(new Phrase("Tipodeauto", negrita));
+				PdfPCell c5 = new PdfPCell(new Phrase("Cilindros()", negrita));
+				c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+				c2.setHorizontalAlignment(Element.ALIGN_CENTER);
+				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				c4.setHorizontalAlignment(Element.ALIGN_CENTER);
+				c5.setHorizontalAlignment(Element.ALIGN_CENTER);
+				c1.setBackgroundColor(BaseColor.LIGHT_GRAY);
+				c2.setBackgroundColor(BaseColor.LIGHT_GRAY);
+				c3.setBackgroundColor(BaseColor.LIGHT_GRAY);
+				c4.setBackgroundColor(BaseColor.LIGHT_GRAY);
+				c5.setBackgroundColor(BaseColor.LIGHT_GRAY);
+				tabla.addCell(c1);
+				tabla.addCell(c2);
+				tabla.addCell(c3);
+				tabla.addCell(c4);
+				tabla.addCell(c5);
+				for (Autos pro : lista) {
+					tabla.addCell("" + pro.getIdauto());
+					tabla.addCell("" + pro.getMarca());
+					tabla.addCell("" + pro.getAño());
+					tabla.addCell("" + pro.getTipodeauto());
+					tabla.addCell("" + pro.getCilindros());
 
+				}
+				doc.add(tabla);
+				Paragraph p1 = new Paragraph(10);
+				p1.add(Chunk.NEWLINE);
+				p1.add("NÚMERO DE REGISTROS: " + lista.size());
+				p1.add(Chunk.NEWLINE);
+				p1.add(Chunk.NEWLINE);
+				p1.setAlignment(Element.ALIGN_RIGHT);
+				doc.add(p1);
+				doc.close();
+				archivo.close();
+		        flujoSalida.close();
+		        flujoEntrada.close();
+				Desktop.getDesktop().open(temp);
+			} catch (FileNotFoundException ex) {
+				JOptionPane.showMessageDialog(null, ex.getStackTrace());
+			} catch (DocumentException ex) {
+				JOptionPane.showMessageDialog(null, ex.getStackTrace());
+			} catch (IOException ex) {
+				JOptionPane.showMessageDialog(null, ex.getStackTrace());
 			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
+			JOptionPane.showMessageDialog(null, e.getStackTrace());
 
-			doc.add(tabla);
-			Paragraph p1 = new Paragraph(10);
-			p1.add(Chunk.NEWLINE);
-			p1.add("NÚMERO DE REGISTRO " + lista.size());
-			p1.add(Chunk.NEWLINE);
-			p1.add(Chunk.NEWLINE);
-			p1.setAlignment(Element.ALIGN_RIGHT);
-			doc.add(p1);
-			doc.close();
-			archivo.close();
-			Desktop.getDesktop().open(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR AL CREAR ARCHIVO");
-		} catch (DocumentException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR AL CREAR DOCUMENTO PDF");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR AL CREAR IO");
-		} catch (URISyntaxException e1) {
-// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 	}
 

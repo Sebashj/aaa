@@ -123,7 +123,7 @@ public class DaoProducto {
 	public boolean editarProducto(Producto user) {
 		PreparedStatement ps=null;
 		try {
-			ps=cx.conectar().prepareStatement("UPDATE Producto SET Idprovedor=?, codigo=?, precio=?, precioventa=?, descripcion=? WHERE idproducto=?");
+			ps=cx.conectar().prepareStatement("UPDATE Producto SET idproveedor=?, codigo=?, precio=?, precioventa=?, descripcion=? WHERE idproducto=?");
 			ps.setInt(1, user.getIdproveedor());
 			ps.setInt(2, user.getCodigo());
 			ps.setDouble(3, user.getPrecio());
